@@ -194,35 +194,38 @@ module.hot.accept(reloadCSS);
 
 require("../scss/style.scss");
 
-var dataPokemon = function dataPokemon() {
-  var getPokemonUrl = function getPokemonUrl(id) {
-    return "https://pokeapi.co/api/v2/pokemon/".concat(id);
-  };
+var getPokemonUrl = function getPokemonUrl(id) {
+  return "https://pokeapi.co/api/v2/pokemon/".concat(id);
+};
 
-  var pokemonPromissies = [];
-
-  for (var i = 1; i <= 150; i++) {
-    pokemonPromissies.push(fetch(getPokemonUrl(i)).then(function (response) {
+var generatePokemonPromises = function generatePokemonPromises() {
+  return Array(150).fill().map(function (_, index) {
+    return fetch(getPokemonUrl(index + 1)).then(function (response) {
       return response.json();
-    }));
-  }
-
-  Promise.all(pokemonPromissies).then(function (pokemons) {
-    // console.log(pokemons)
-    var cardPokemons = pokemons.reduce(function (acc, pokemon) {
-      var types = pokemon.types.map(function (typeInfo) {
-        return typeInfo.type.name;
-      });
-      acc += "\n            <div class=\"card \">\n            <img src=\"https://pokeres.bastionbot.org/images/pokemon/".concat(pokemon.id, ".png\" class=\"cardimage ").concat(types[0], "\" alt=\"").concat(pokemon.name, "\"\n                <h2>").concat(pokemon.name, "</h2>\n                <h4>").concat(pokemon.id, "</h4>\n                <p>").concat(types.join(' |  '), "</p>\n            </div>");
-      return acc;
-    }, '');
-    var cards = document.querySelector('.cards');
-    cards.innerHTML = cardPokemons;
-    console.log(cardPokemons);
+    });
   });
 };
 
-dataPokemon();
+var generateHTML = function generateHTML(pokemons) {
+  return pokemons = pokemons.reduce(function (acc, _ref) {
+    var name = _ref.name,
+        id = _ref.id,
+        types = _ref.types;
+    var elementTypes = types.map(function (typeInfo) {
+      return typeInfo.type.name;
+    });
+    acc += "\n        <div class=\"card ".concat(elementTypes[0], " \">\n        <img src=\"https://pokeres.bastionbot.org/images/pokemon/").concat(id, ".png\" class=\"cardimage\" alt=\"").concat(name, "\"\n            <h2>").concat(name, "</h2>\n            <h4>").concat(id, "</h4>\n            <p>").concat(elementTypes.join(' |  '), "</p>\n        </div>");
+    return acc;
+  }, '');
+};
+
+var insertPokemnos = function insertPokemnos(pokemons) {
+  var cards = document.querySelector('.cards');
+  cards.innerHTML = pokemons;
+};
+
+var pokemonPromissies = generatePokemonPromises();
+Promise.all(pokemonPromissies).then(generateHTML).then(insertPokemnos);
 },{"../scss/style.scss":"src/scss/style.scss"}],"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
