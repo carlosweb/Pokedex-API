@@ -194,32 +194,33 @@ module.hot.accept(reloadCSS);
 
 require("../scss/style.scss");
 
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-var dataPokemon = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-    var url;
-    return regeneratorRuntime.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            url = "https://pokeapi.co/api/v2/pokemon/";
-            fetch('');
-
-          case 2:
-          case "end":
-            return _context.stop();
-        }
-      }
-    }, _callee);
-  }));
-
-  return function dataPokemon() {
-    return _ref.apply(this, arguments);
+var dataPokemon = function dataPokemon() {
+  var getPokemonUrl = function getPokemonUrl(id) {
+    return "https://pokeapi.co/api/v2/pokemon/".concat(id);
   };
-}();
+
+  var pokemonPromissies = [];
+
+  for (var i = 1; i <= 150; i++) {
+    pokemonPromissies.push(fetch(getPokemonUrl(i)).then(function (response) {
+      return response.json();
+    }));
+  }
+
+  Promise.all(pokemonPromissies).then(function (pokemons) {
+    // console.log(pokemons)
+    var cardPokemons = pokemons.reduce(function (acc, pokemon) {
+      var types = pokemon.types.map(function (typeInfo) {
+        return typeInfo.type.name;
+      });
+      acc += "\n            <div class=\"card \">\n            <img src=\"https://pokeres.bastionbot.org/images/pokemon/".concat(pokemon.id, ".png\" class=\"cardimage ").concat(types[0], "\" alt=\"").concat(pokemon.name, "\"\n                <h2>").concat(pokemon.name, "</h2>\n                <h4>").concat(pokemon.id, "</h4>\n                <p>").concat(types.join(' |  '), "</p>\n            </div>");
+      return acc;
+    }, '');
+    var cards = document.querySelector('.cards');
+    cards.innerHTML = cardPokemons;
+    console.log(cardPokemons);
+  });
+};
 
 dataPokemon();
 },{"../scss/style.scss":"src/scss/style.scss"}],"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
@@ -250,7 +251,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63302" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63780" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
