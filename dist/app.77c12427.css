@@ -8,4 +8,27 @@ body {
   background-color: #ccc;
 }
 
+.container .content {
+  padding: 20px;
+}
+.container .content .cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+.container .content .cards .card {
+  width: 100%;
+  height: auto;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #b82121;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.container .content .cards .card img {
+  max-width: 50%;
+  height: auto;
+}
+
 /*# sourceMappingURL=/app.77c12427.css.map */
